@@ -1,24 +1,12 @@
 import "./style.css";
 
-let todos = [
-  {
-    id: 1,
-    title: "todo 1",
-    completed: false,
-  },
-  {
-    id: 2,
-    title: "todo 2",
-    completed: false,
-  },
-];
+let todos: any[] = [];
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 const todoList = app.querySelector<HTMLUListElement>(".TodoList")!;
-const form = app.querySelector<HTMLFormElement>("form")!;
 const input = app.querySelector<HTMLInputElement>("input")!;
 const addTodoBtn = app.querySelector<HTMLButtonElement>(".AddTodoBtn")!;
-const deleteBtn = todoList.querySelectorAll<HTMLButtonElement>(".DeleteBtn")!;
+const completedTodos = app.querySelector("span")!;
 
 function addTodo(): void {
   const todo = input.value;
@@ -28,43 +16,69 @@ function addTodo(): void {
       title: todo,
       completed: false,
     });
+
+    //create li element
+    const li = document.createElement("li");
+    li.dataset.id = todos.length.toString();
+
+    //create checkbox
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = false;
+
+    //create label element
+    const label = document.createElement("label");
+    label.innerText = todo;
+
+    //create delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("DeleteBtn");
+    deleteBtn.innerText = "Delete";
+
+    //append elements to li
+    li.append(checkbox, label, deleteBtn);
+
+    //append li to ul
+    todoList.appendChild(li);
+
+    //reset input value
+    input.value = "";
+
+    //add event listener to delete button
+    deleteBtn.onclick = (e) => {
+      e.preventDefault();
+      //@ts-ignore
+      const li = e.target.parentElement;
+      //remove todo from todos array
+      todos = todos.filter((todo) => todo.id !== parseInt(li.dataset.id));
+      todoList.removeChild(li);
+      setCompletedTodos();
+    };
+
+    //add event listener to checkbox
+    checkbox.onclick = (e) => {
+      //@ts-ignore
+      const li = e.target.parentElement;
+      //toggle completed property
+      todos = todos.map((todo) =>
+        todo.id === parseInt(li.dataset.id) ? { ...todo, completed: !todo.completed } : todo
+      );
+      setCompletedTodos();
+    };
   }
-  const li = document.createElement("li");
-  li.innerHTML = `
-    <input type="checkbox" id="todo-${todos.length}" />
-    <label for="${todos.length}">${todo}</label>
-    <button data-id="${todos.length}" class="DeleteBtn">Delete</button>
-  `;
-  todoList.appendChild(li);
-  input.value = "";
-  console.log(todos);
 }
 
-function deleteTodo(id: number): void {
-  todos = todos.filter((todo) => todo.id !== id);
-  const li = todoList.querySelector<HTMLLIElement>(`#todo-${id}`)!;
-  todoList.removeChild(li);
-  console.log(todos);
-}
-
-deleteBtn.forEach((btn) => {
-  btn.addEventListener("click", (e) => {
-    let id = parseInt(btn.dataset.id as string);
-    deleteTodo(Number(id));
-  });
-});
-
+//Todo Button event listener
 addTodoBtn.onclick = (e) => {
   e.preventDefault();
   addTodo();
+  setCompletedTodos();
 };
 
-todos.forEach((todo) => {
-  const li = document.createElement("li");
-  li.innerHTML = `
-    <input type="checkbox" id="${todo.id}" />
-    <label for="${todo.id}">${todo.title}</label>
-    <button class="DeleteBtn">Delete</button>
-  `;
-  todoList.appendChild(li);
-});
+//set completed todos
+function setCompletedTodos(): void {
+  completedTodos.innerText =
+    todos.filter((todo) => todo.completed).length.toString() !== "0"
+      ? "Completed:" + todos.filter((todo) => todo.completed).length.toString()
+      : "";
+}
