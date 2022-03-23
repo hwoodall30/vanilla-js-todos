@@ -48,6 +48,7 @@ function addTodo(): void {
       {
         duration: 400,
         fill: "forwards",
+        easing: "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
       }
     );
 
@@ -67,7 +68,7 @@ function addTodo(): void {
         {
           duration: 400,
           fill: "forwards",
-          easing: "ease-in-out",
+          easing: "ease",
         }
       ).onfinish = () => {
         //remove todo from todos array
