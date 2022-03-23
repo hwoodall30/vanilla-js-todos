@@ -59,6 +59,10 @@ function addTodo(): void {
     checkbox.onclick = (e) => {
       //@ts-ignore
       const li = e.target.parentElement;
+      //@ts-ignore
+      li.children[1].style.textDecoration = e.target.checked ? "line-through" : "none";
+      //@ts-ignore
+      li.style.border = e.target.checked ? "1px solid #26bd6081" : "";
       //toggle completed property
       todos = todos.map((todo) =>
         todo.id === parseInt(li.dataset.id) ? { ...todo, completed: !todo.completed } : todo
