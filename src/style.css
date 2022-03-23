@@ -72,10 +72,32 @@ form {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 0 10px;
+  transition: all 0.2s ease;
+}
+
+.TodoList li.completed {
+  transition: all 0.2s ease;
+  border: 1px solid #26bd6081;
+}
+
+.TodoList li.completed label {
+  position: relative;
+}
+
+.TodoList li.completed label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 1px;
+  background: #181818;
+  animation: strikethrough 0.5s ease;
 }
 
 .TodoList button {
-  background: #bd3523;
+  background: #e26150;
   border: none;
   border-radius: 5px;
   width: 60px;
@@ -86,4 +108,15 @@ form {
   outline: none;
   font-weight: bold;
   letter-spacing: 0.05em;
+}
+
+@keyframes strikethrough {
+  0% {
+    opacity: 0;
+    width: 0%;
+  }
+  100% {
+    opacity: 1;
+    width: 100%;
+  }
 }

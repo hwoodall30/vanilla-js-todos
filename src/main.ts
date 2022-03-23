@@ -40,6 +40,16 @@ function addTodo(): void {
 
     //append li to ul
     todoList.appendChild(li);
+    li.animate(
+      [
+        { transform: "scale(0)", opacity: 0 },
+        { transform: "scale(1)", opacity: 1 },
+      ],
+      {
+        duration: 400,
+        fill: "forwards",
+      }
+    );
 
     //reset input value
     input.value = "";
@@ -49,10 +59,22 @@ function addTodo(): void {
       e.preventDefault();
       //@ts-ignore
       const li = e.target.parentElement;
-      //remove todo from todos array
-      todos = todos.filter((todo) => todo.id !== parseInt(li.dataset.id));
-      todoList.removeChild(li);
-      setCompletedTodos();
+      li.animate(
+        [
+          { transform: "scale(1)", opacity: 1 },
+          { transform: "scale(0)", opacity: 0 },
+        ],
+        {
+          duration: 400,
+          fill: "forwards",
+          easing: "ease-in-out",
+        }
+      ).onfinish = () => {
+        //remove todo from todos array
+        todos = todos.filter((todo) => todo.id !== parseInt(li.dataset.id));
+        todoList.removeChild(li);
+        setCompletedTodos();
+      };
     };
 
     //add event listener to checkbox
@@ -60,9 +82,8 @@ function addTodo(): void {
       //@ts-ignore
       const li = e.target.parentElement;
       //@ts-ignore
-      li.children[1].style.textDecoration = e.target.checked ? "line-through" : "none";
-      //@ts-ignore
-      li.style.border = e.target.checked ? "1px solid #26bd6081" : "";
+      li.classList.toggle("completed");
+      // li.style.border = e.target.checked ? "1px solid #26bd6081" : "";
       //toggle completed property
       todos = todos.map((todo) =>
         todo.id === parseInt(li.dataset.id) ? { ...todo, completed: !todo.completed } : todo
